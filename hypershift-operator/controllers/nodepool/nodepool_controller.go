@@ -518,6 +518,9 @@ func (r *NodePoolReconciler) reconcile(ctx context.Context, hcluster *hyperv1.Ho
 	// Reconcile PowerVSImage only for the PowerVS platform
 	if nodePool.Spec.Platform.Type == hyperv1.PowerVSPlatform {
 		powervsImage, region, err := getPowerVSImage(nodePool, hcluster.Spec.Platform.PowerVS.Region, releaseImage)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
 
 		// Reconcile (Platform)MachineTemplate.
 		image, mutateImage, _, err := ibmPowerVSImageBuilder(hcluster, nodePool, infraID, region, powervsImage)
